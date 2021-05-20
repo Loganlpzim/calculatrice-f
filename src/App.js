@@ -1,50 +1,52 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
-import "./App.css"
+import './App.css';
+import React, {useState} from 'react';
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
+function App() {
+  const [result, setResult] = useState("");
+
+  const displayNumber = (val) => {
+    setResult(result.concat(val.target.name));
   }
-
-  handleClick = api => e => {
-    e.preventDefault()
-
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
+  const calculate = () => {
+    try {
+      // eslint-disable-next-line
+      setResult(eval(result).toString());
+    } catch(error) {
+      setResult("Error")
+    }
   }
-
-  render() {
-    const { loading, msg } = this.state
-
-    return (
-      <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    )
+  const clear = () => {
+    setResult("");
   }
-}
-
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
+  const clearOne = () => {
+    setResult(result.slice(0, -1));
+  }
+  return (
+    <div className="container">
+      <form>
+        <input className="value" type="text" value={result} placeholder="0"/>
+      </form>
+      <div className="buttons">
+        <button className="highlight" id="clear" onClick={clear}>Clear</button>
+        <button className="highlight" id="clearOne" onClick={clearOne}>CE</button>
+        <button name="/" className="highlight" onClick={displayNumber}>/</button>
+        <button name="7" onClick={displayNumber}>7</button>
+        <button name="8" onClick={displayNumber}>8</button>
+        <button name="9" onClick={displayNumber}>9</button>
+        <button name="*" className="highlight" onClick={displayNumber}>*</button>
+        <button name="4" onClick={displayNumber}>4</button>
+        <button name="5" onClick={displayNumber}>5</button>
+        <button name="6" onClick={displayNumber}>6</button>
+        <button name="-"className="highlight" onClick={displayNumber}>-</button>
+        <button name="1" onClick={displayNumber}>1</button>
+        <button name="2" onClick={displayNumber}>2</button>
+        <button name="3" onClick={displayNumber}>3</button>
+        <button name="+" className="highlight" onClick={displayNumber}>+</button>
+        <button name="0" onClick={displayNumber}>0</button>
+        <button name="." onClick={displayNumber}>.</button>
+        <button className="highlight" id="result" name="=" onClick={calculate}>=</button>
       </div>
-    )
-  }
+    </div>
+  );
 }
-
-export default App
+export default App;
